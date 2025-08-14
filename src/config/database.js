@@ -10,15 +10,23 @@ const connectDB = async () => {
     }
 
     console.log('🔄 Tentando conectar ao MongoDB...');
-    console.log('📍 URI (mascarada):', mongoURI.replace(/:([^:@]+)@/, ':***@'));
+    // Mascarar a senha nos logs
+    const maskedURI = mongoURI.replace(/:([^:@]+)@/, ':***@');
+    console.log('📍 URI (mascarada):', maskedURI);
     
-    // Opções de conexão
+    // Verificar se a URI está no formato correto
+    if (!mongoURI.includes('mongodb+srv://') && !mongoURI.includes('mongodb://')) {
+      throw new Error('MONGODB_URI deve começar com mongodb:// ou mongodb+srv://');
+    }
+    
+    // Opções de conexão mais robustas
     const options = {
-      maxPoolSize: 10, // Máximo de 10 conexões simultâneas
-      serverSelectionTimeoutMS: 10000, // Timeout após 10s (aumentado)
-      socketTimeoutMS: 45000, // Timeout de socket após 45s
-      bufferCommands: false, // Disable mongoose buffering
-      authSource: 'admin' // Adicionar authSource explicitamente
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 30000, // 30 segundos
+      socketTimeoutMS: 45000,
+      bufferCommands: false,
+      retryWrites: true,
+      w: 'majority'
     };
 
     // Conectar ao MongoDB
