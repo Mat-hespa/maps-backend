@@ -19,19 +19,27 @@ const connectDB = async () => {
       throw new Error('MONGODB_URI deve começar com mongodb:// ou mongodb+srv://');
     }
     
-    // Opções de conexão mais robustas
+    // Opções de conexão alinhadas com o exemplo oficial do MongoDB
     const options = {
+      // Configurações do Stable API (como no exemplo oficial)
+      serverApi: {
+        version: '1',
+        strict: true,
+        deprecationErrors: true,
+      },
+      // Outras opções importantes
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 30000, // 30 segundos
+      serverSelectionTimeoutMS: 30000,
       socketTimeoutMS: 45000,
-      bufferCommands: false,
-      retryWrites: true,
-      w: 'majority'
+      bufferCommands: false
     };
 
     // Conectar ao MongoDB
     const conn = await mongoose.connect(mongoURI, options);
 
+    // Teste de ping como no exemplo oficial
+    await mongoose.connection.db.admin().ping();
+    console.log("✅ Pinged your deployment. You successfully connected to MongoDB!");
     console.log(`✅ MongoDB conectado: ${conn.connection.host}`);
     
     // Event listeners para monitorar a conexão
