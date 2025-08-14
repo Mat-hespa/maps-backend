@@ -58,6 +58,22 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Rota raiz - redireciona para a documentação da API
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Bem-vindo à API do Map App - Lugares Especiais',
+    version: '1.0.0',
+    endpoints: {
+      api: '/api',
+      places: '/api/places',
+      health: '/health'
+    },
+    frontend: process.env.FRONTEND_URL || 'Frontend não configurado',
+    documentation: 'Acesse /api para mais informações'
+  });
+});
+
 // Rotas da API
 app.use('/api/places', placesRoutes);
 

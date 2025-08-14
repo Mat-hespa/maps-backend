@@ -8,13 +8,17 @@ const connectDB = async () => {
     if (!mongoURI) {
       throw new Error('MONGODB_URI não está definida nas variáveis de ambiente');
     }
+
+    console.log('🔄 Tentando conectar ao MongoDB...');
+    console.log('📍 URI (mascarada):', mongoURI.replace(/:([^:@]+)@/, ':***@'));
     
     // Opções de conexão
     const options = {
       maxPoolSize: 10, // Máximo de 10 conexões simultâneas
-      serverSelectionTimeoutMS: 5000, // Timeout após 5s
+      serverSelectionTimeoutMS: 10000, // Timeout após 10s (aumentado)
       socketTimeoutMS: 45000, // Timeout de socket após 45s
-      bufferCommands: false // Disable mongoose buffering
+      bufferCommands: false, // Disable mongoose buffering
+      authSource: 'admin' // Adicionar authSource explicitamente
     };
 
     // Conectar ao MongoDB
