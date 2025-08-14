@@ -20,8 +20,24 @@ app.use(helmet({
 }));
 
 // CORS - Permitir requisições do frontend
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://app-maps-ten.vercel.app',
+  process.env.FRONTEND_URL
+].filter(Boolean); // Remove valores undefined/null
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+  origin: function (origin, callback) {
+    // Permitir requisições sem origin (ex: mobile apps, Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('🚫 CORS bloqueado para origin:', origin);
+      callback(new Error('Não permitido pelo CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 }));
@@ -76,6 +92,9 @@ app.get('/', (req, res) => {
 
 // Rotas da API
 app.use('/api/places', placesRoutes);
+
+// Rota alternativa para compatibilidade (redireciona /places para /api/places)
+app.use('/places', placesRoutes);
 
 // Rota para informações da API
 app.get('/api', (req, res) => {
