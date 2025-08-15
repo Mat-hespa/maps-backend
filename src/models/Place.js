@@ -21,7 +21,6 @@ const placeSchema = new mongoose.Schema({
   image: {
     type: String,
     required: true,
-    default: 'assets/praia.jpg'
   },
   coordinates: {
     type: [Number],

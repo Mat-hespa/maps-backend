@@ -11,7 +11,7 @@ const createPlaceSchema = Joi.object({
     'string.empty': 'Descrição é obrigatória',
     'string.max': 'Descrição deve ter no máximo 1000 caracteres'
   }),
-  image: Joi.string().optional().default('assets/praia.jpg'),
+  image: Joi.string().optional(),
   coordinates: Joi.array().items(Joi.number()).length(2).required().messages({
     'array.length': 'Coordenadas devem conter exatamente 2 números [latitude, longitude]',
     'any.required': 'Coordenadas são obrigatórias'
